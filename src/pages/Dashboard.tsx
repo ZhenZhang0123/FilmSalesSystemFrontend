@@ -21,7 +21,7 @@ export default function Dashboard() {
       <Typography>Welcome, {authContext?.username}!</Typography>
 
       {/* Tabs for both users and admins */}
-      <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)}>
+      <Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)}>
         <Tab label="Dashboard Overview" />
         {isAdmin && <Tab label="User Management" />} {/* Only for admins */}
         {isAdmin && <Tab label="System Settings" />} {/* Only for admins */}
