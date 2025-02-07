@@ -21,7 +21,9 @@ export default function Login() {
         authContext?.login(response.token, response.username, response.roles);
         setSnackbarMessage("Login successful!");
         setSnackbarSeverity("success");
-        navigate("/dashboard");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       }
     } catch (error: any) {
       if (error.response) {

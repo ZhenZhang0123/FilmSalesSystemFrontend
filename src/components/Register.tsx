@@ -32,7 +32,9 @@ export default function Register() {
       await registerUser({ username, email, password, roles: selectedRoles });
       setSnackbarMessage("Registration successful!");
       setSnackbarSeverity("success");
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error: any) {
       if (error.response) {
         setSnackbarMessage(error.response.data);
