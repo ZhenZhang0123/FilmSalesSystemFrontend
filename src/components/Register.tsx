@@ -34,7 +34,7 @@ export default function Register() {
       setSnackbarSeverity("success");
       setTimeout(() => {
         navigate("/login");
-      }, 1000);
+      }, 500);
     } catch (error: any) {
       if (error.response) {
         setSnackbarMessage(error.response.data);

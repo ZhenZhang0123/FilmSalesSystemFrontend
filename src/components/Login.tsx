@@ -23,7 +23,7 @@ export default function Login() {
         setSnackbarSeverity("success");
         setTimeout(() => {
           navigate("/dashboard");
-        }, 1000);
+        }, 500);
       }
     } catch (error: any) {
       if (error.response) {
