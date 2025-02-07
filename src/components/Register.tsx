@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TextField, Button, Container, Typography, Link, Snackbar, Alert, AlertColor, Box } from "@mui/material";
+import { TextField, Button, Container, Typography, Link, Snackbar, Alert, AlertColor, Box, MenuItem, Select, InputLabel, FormControl, SelectChangeEvent } from "@mui/material";
 import { registerUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +7,7 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"ROLE_USER" | "ROLE_ADMIN">("ROLE_USER"); // Default to USER role
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>("success");
@@ -27,7 +28,8 @@ export default function Register() {
     }
 
     try {
-      await registerUser({ username, email, password });
+      const selectedRoles: ("ROLE_USER" | "ROLE_ADMIN")[] = role === "ROLE_ADMIN" ? ["ROLE_USER", "ROLE_ADMIN"] : [role];
+      await registerUser({ username, email, password, roles: selectedRoles });
       setSnackbarMessage("Registration successful!");
       setSnackbarSeverity("success");
       navigate("/login");
@@ -49,6 +51,10 @@ export default function Register() {
     }
   };
 
+  const handleRoleChange = (event: SelectChangeEvent<"ROLE_USER" | "ROLE_ADMIN">) => {
+    setRole(event.target.value as "ROLE_USER" | "ROLE_ADMIN");
+  };
+
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
       <Container maxWidth="sm">
@@ -63,7 +69,7 @@ export default function Register() {
             margin="normal"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             inputProps={{ minLength: 3 }}
           />
           <TextField
@@ -73,7 +79,7 @@ export default function Register() {
             margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
           <TextField
             label="Password"
@@ -83,9 +89,24 @@ export default function Register() {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            onKeyPress={handleKeyPress}
-            inputProps={{ minLength: 6 }}
+            onKeyDown={handleKeyPress}
+            inputProps={{
+              minLength: 6
+            }}
           />
+
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Role</InputLabel>
+            <Select
+              value={role}
+              label="Role"
+              onChange={handleRoleChange}
+            >
+              <MenuItem value="ROLE_USER">User</MenuItem>
+              <MenuItem value="ROLE_ADMIN">Admin</MenuItem>
+            </Select>
+          </FormControl>
+
           <Button variant="contained" color="primary" fullWidth onClick={handleRegister}>
             Register
           </Button>

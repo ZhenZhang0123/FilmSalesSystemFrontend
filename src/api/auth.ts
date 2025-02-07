@@ -6,6 +6,7 @@ export interface RegisterRequest {
   username: string;
   email: string;
   password: string;
+  roles: ("ROLE_USER" | "ROLE_ADMIN")[];
 }
 
 export interface AuthRequest {

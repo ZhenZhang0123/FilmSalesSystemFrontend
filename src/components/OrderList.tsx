@@ -36,6 +36,10 @@ const OrderList: React.FC<OrderListProps> = ({ username, token }) => {
         return <Typography color="error">{error}</Typography>;
     }
 
+    if (orders.length === 0) {
+        return <Typography>No orders found.</Typography>;
+    }
+
     return (
         <List>
             {orders.map((order) => (
