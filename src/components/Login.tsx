@@ -24,8 +24,8 @@ export default function Login() {
         navigate("/dashboard");
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 401) {
-        setSnackbarMessage("Invalid username or password. Please try again.");
+      if (error.response) {
+        setSnackbarMessage(error.response.data);
       } else {
         setSnackbarMessage("An error occurred. Please try again.");
       }
@@ -64,7 +64,7 @@ export default function Login() {
 
           <Snackbar
             open={openSnackbar}
-            autoHideDuration={6000}
+            autoHideDuration={3000}
             onClose={() => setOpenSnackbar(false)}
             anchorOrigin={{ vertical: "top", horizontal: "center" }}
           >
