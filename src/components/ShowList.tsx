@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { List, ListItem, ListItemText, Typography, TextField, Button } from "@mui/material";
-import { fetchAvailableFutureShows, orderTickets, ShowResponse } from "../api/show";
+import { fetchAvailableFutureShows, ShowResponse } from "../api/show";
+import { orderTickets } from "../api/order";
 
 interface ShowListProps {
     username: string;

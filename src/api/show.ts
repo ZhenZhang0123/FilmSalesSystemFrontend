@@ -10,12 +10,6 @@ export interface ShowResponse {
     remainingTickets: number;
 }
 
-export interface OrderResponse {
-    orderId: number;
-    showId: number;
-    ticketCount: number;
-}
-
 // Function to fetch available future shows
 export const fetchAvailableFutureShows = async (token: string): Promise<ShowResponse[]> => {
     const response = await axios.get<ShowResponse[]>(`${API_BASE_URL}/availableFutureShows`, {
@@ -23,23 +17,5 @@ export const fetchAvailableFutureShows = async (token: string): Promise<ShowResp
             Authorization: `Bearer ${token}`,
         },
     });
-    return response.data;
-};
-
-// Function to order tickets
-export const orderTickets = async (token: string, userName: string, showId: number, ticketCount: number) => {
-    const response = await axios.post<OrderResponse>(`${API_BASE_URL}/orderTicket`,
-        {
-            userName,
-            showId,
-            ticketCount,
-        },
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-
     return response.data;
 };
