@@ -4,6 +4,7 @@ import { Button, Typography, Container, Tabs, Tab, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ShowList from "../components/ShowList";
 import OrderList from "../components/OrderList";
+import ShowSalesStatusList from "../components/ShowSalesStatusList";
 
 export default function Dashboard() {
   const authContext = useContext(AuthContext);
@@ -30,8 +31,7 @@ export default function Dashboard() {
       <Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)}>
         <Tab label="My orders" />
         <Tab label="Available Shows" />
-        {isAdmin && <Tab label="User Management" />}
-        {isAdmin && <Tab label="System Settings" />}
+        {isAdmin && <Tab label="Sales Status" />}
       </Tabs>
 
       {tab === 0 && (
@@ -44,6 +44,12 @@ export default function Dashboard() {
       {tab === 1 && (
         <ShowList
           username={authContext?.username!}
+          token={authContext?.token!}
+        />
+      )}
+
+      {tab === 2 && (
+        <ShowSalesStatusList
           token={authContext?.token!}
         />
       )}

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080/user";
+const API_BASE_URL = "http://localhost:8080";
 
 export interface ShowResponse {
     id: number;
@@ -10,9 +10,27 @@ export interface ShowResponse {
     remainingTickets: number;
 }
 
+export interface ShowSalesStatusResponse {
+    showId: number;
+    filmName: string;
+    showTime: string; // Date in ISO 8601 format
+    soldTickets: number;
+    totalRevenue: number;
+}
+
 // Function to fetch available future shows
 export const fetchAvailableFutureShows = async (token: string): Promise<ShowResponse[]> => {
-    const response = await axios.get<ShowResponse[]>(`${API_BASE_URL}/availableFutureShows`, {
+    const response = await axios.get<ShowResponse[]>(`${API_BASE_URL}/user/availableFutureShows`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
+};
+
+// Function to fetch show sales status
+export const fetchShowSalesStatus = async (token: string): Promise<ShowSalesStatusResponse[]> => {
+    const response = await axios.get<ShowSalesStatusResponse[]>(`${API_BASE_URL}/admin/showSalesStatus`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
