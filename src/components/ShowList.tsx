@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { List, ListItem, ListItemText, Typography, TextField, Button } from "@mui/material";
+import { List, ListItem, ListItemText, Typography, TextField, Button, Pagination } from "@mui/material";
 import { fetchAvailableFutureShows, ShowResponse } from "../api/show";
 import { orderTickets } from "../api/order";
 
@@ -13,12 +13,15 @@ const ShowList: React.FC<ShowListProps> = ({ username, token }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [ticketCounts, setTicketCounts] = useState<{ [key: number]: number }>({});
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const PAGE_SIZE = 5; // Number of orders per page
 
-    // ✅ Fetch Shows When Component Mounts
-    const fetchShows = async () => {
+    const fetchShows = async (page: number) => {
         try {
-            const showsData = await fetchAvailableFutureShows(token);
-            setShows(showsData);
+            const response = await fetchAvailableFutureShows(token, page - 1, PAGE_SIZE);
+            setShows(response.content);
+            setTotalPages(response.totalPages);
             setLoading(false);
         } catch (err) {
             setError("Failed to fetch shows.");
@@ -27,69 +30,44 @@ const ShowList: React.FC<ShowListProps> = ({ username, token }) => {
     };
 
     useEffect(() => {
-        fetchShows();
-    }, [token]);
+        fetchShows(page);
+    }, [token, page]);
 
-    const handleInputChange = (showId: number, value: number) => {
-        setTicketCounts((prev) => ({ ...prev, [showId]: value }));
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
     };
 
-    const handleOrder = async (showId: number) => {
-        const ticketCount = ticketCounts[showId] || 0;
-        if (ticketCount <= 0) {
-            alert("Please enter a valid ticket count.");
-            return;
-        }
-
-        try {
-            const response = await orderTickets(token, username, showId, ticketCount);
-            alert(`Order Successful! Order ID: ${response.orderId}`);
-            // Re-fetch shows after a successful order
-            fetchShows();
-        } catch (error) {
-            alert("Failed to place the order.");
-        }
-    };
-
-    if (loading) {
-        return <Typography>Loading shows...</Typography>;
-    }
-
-    if (error) {
-        return <Typography color="error">{error}</Typography>;
-    }
+    if (loading) return <Typography>Loading shows...</Typography>;
+    if (error) return <Typography color="error">{error}</Typography>;
 
     return (
-        <List>
-            {shows.map((show) => (
-                <ListItem key={show.id} divider>
-                    <ListItemText
-                        primary={show.filmName}
-                        secondary={`Show Time: ${new Date(show.showTime).toLocaleString()} | Ticket Price: $${show.ticketPrice} | Remaining Tickets: ${show.remainingTickets}`}
-                    />
-                    <TextField
-                        type="number"
-                        label="Tickets"
-                        value={ticketCounts[show.id] || ""}
-                        onChange={(e) => handleInputChange(show.id, Math.max(0, Number(e.target.value)))}
-                        style={{ marginRight: "8px", width: "120px" }}
-                        slotProps={{
-                            htmlInput: {
-                                min: 0, // Prevent negative numbers
-                                inputMode: 'numeric',
-                                pattern: '[0-9]*', // Allow only digits
-                            },
-                        }}
-                    />
-                    <Button variant="contained" color="primary" onClick={() => handleOrder(show.id)}>
-                        Buy Tickets
-                    </Button>
-                </ListItem>
-            ))}
-        </List>
+        <>
+            <List>
+                {shows.map((show) => (
+                    <ListItem key={show.id} divider>
+                        <ListItemText
+                            primary={show.filmName}
+                            secondary={`Show Time: ${new Date(show.showTime).toLocaleString()} | Price: $${show.ticketPrice} | Remaining: ${show.remainingTickets}`}
+                        />
+                        <TextField
+                            type="number"
+                            label="Tickets"
+                            value={ticketCounts[show.id] || ""}
+                            onChange={(e) => setTicketCounts({ ...ticketCounts, [show.id]: Math.max(0, Number(e.target.value)) })}
+                            style={{ marginRight: "8px", width: "120px" }}
+                        />
+                        <Button variant="contained" color="primary" onClick={() => orderTickets(token, username, show.id, ticketCounts[show.id] || 0)}>
+                            Buy
+                        </Button>
+                    </ListItem>
+                ))}
+            </List>
+            <Pagination count={totalPages} page={page} onChange={handlePageChange} style={{ marginTop: "16px", display: "flex", justifyContent: "center" }} />
+        </>
     );
 };
 
 export default ShowList;
+
 
 

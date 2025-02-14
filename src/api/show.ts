@@ -19,21 +19,19 @@ export interface ShowSalesStatusResponse {
 }
 
 // Function to fetch available future shows
-export const fetchAvailableFutureShows = async (token: string): Promise<ShowResponse[]> => {
-    const response = await axios.get<ShowResponse[]>(`${API_BASE_URL}/user/availableFutureShows`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+export const fetchAvailableFutureShows = async (token: string, page: number, size: number) => {
+    const response = await axios.get(`${API_BASE_URL}/user/availableFutureShows`, {
+        params: { page, size },
+        headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
 
 // Function to fetch show sales status
-export const fetchShowSalesStatus = async (token: string): Promise<ShowSalesStatusResponse[]> => {
-    const response = await axios.get<ShowSalesStatusResponse[]>(`${API_BASE_URL}/admin/showSalesStatus`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+export const fetchShowSalesStatus = async (token: string, page: number, size: number) => {
+    const response = await axios.get(`${API_BASE_URL}/admin/showSalesStatus`, {
+        params: { page, size },
+        headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
 };
