@@ -36,13 +36,16 @@ export const orderTickets = async (token: string, userName: string, showId: numb
 };
 
 // Function to get the order list
-export const getOrderList = async (token: string, userName: string) => {
-    const response = await axios.get<OrderListResponse[]>(`${API_BASE_URL}/myOrders`, {
-        params: { userName },
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+export const getOrderList = async (token: string, userName: string, page: number, size: number) => {
+    const response = await axios.get<{ content: OrderListResponse[]; totalPages: number; totalElements: number }>(
+        `${API_BASE_URL}/myOrders`,
+        {
+            params: { userName, page, size },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
 
     return response.data;
 };
